@@ -14,7 +14,12 @@ import java.util.function.Function;
 public class ApiGatewayConfiguration {
     @Bean
     public RouteLocator gatewayRouter(RouteLocatorBuilder builder){
-        Function<PredicateSpec, Buildable<Route>> routeFunction = p -> p.path("/get").uri("http://httpbin.org:80");
+//        creating a simple route function using lambda: redirects any get to that uri
+        Function<PredicateSpec, Buildable<Route>> routeFunction = p -> p.path("/get")
+                .filters(f -> f.addRequestHeader("MyHeader", "MyURI")
+//                        Can add auth headers here
+                        .addRequestParameter("Param", "MyValue"))
+                .uri("http://httpbin.org:80");
         return builder.routes()
                 .route(routeFunction)
                 .build();
