@@ -24,6 +24,16 @@ public class ApiGatewayConfiguration {
                 .route(p -> p.path("/currency-exchange/**")
 //                        talk to eureka, find the location of the service load balance instances
                         .uri("lb://currency-exchange"))
+                .route(p -> p.path("/currency-conversion/**")
+//                        talk to eureka, find the location of the service load balance instances
+                        .uri("lb://currency-conversion"))
+                .route(p -> p.path("/currency-conversion-feign/**")
+//                        talk to eureka, find the location of the service load balance instances
+                        .uri("lb://currency-conversion"))
+                .route(p -> p.path("/currency-conversion-new/**")
+                        .filters(f -> f.rewritePath("currency-conversion-new/(?<segment>.*)","currency-conversion-feign/${segment}"))
+//                        talk to eureka, find the location of the service load balance instances
+                        .uri("lb://currency-conversion"))
                 .build();
     }
 }
