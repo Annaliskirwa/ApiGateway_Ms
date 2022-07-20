@@ -15,13 +15,15 @@ public class ApiGatewayConfiguration {
     @Bean
     public RouteLocator gatewayRouter(RouteLocatorBuilder builder){
 //        creating a simple route function using lambda: redirects any get to that uri
-        Function<PredicateSpec, Buildable<Route>> routeFunction = p -> p.path("/get")
-                .filters(f -> f.addRequestHeader("MyHeader", "MyURI")
-//                        Can add auth headers here
-                        .addRequestParameter("Param", "MyValue"))
-                .uri("http://httpbin.org:80");
         return builder.routes()
-                .route(routeFunction)
+                .route(p -> p.path("/get")
+                        .filters(f -> f.addRequestHeader("MyHeader", "MyURI")
+        //                        Can add auth headers here
+                                .addRequestParameter("Param", "MyValue"))
+                        .uri("http://httpbin.org:80"))
+                .route(p -> p.path("/currency-exchange/**")
+//                        talk to eureka, find the location of the service load balance instances
+                        .uri("lb://currency-exchange"))
                 .build();
     }
 }
